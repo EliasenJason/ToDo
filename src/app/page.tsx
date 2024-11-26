@@ -1,5 +1,7 @@
-export default function Home(): JSX.Element {
+export default function Home() {
   return (
-    <p>hello</p>
+    <div>
+      <p>hello, please show this</p>
+    </div>
   );
 }
