@@ -1,31 +1,37 @@
-'use client'
-import { useEffect, useState } from 'react'
-import Pusher from 'pusher-js'
+'use client';
+import { useEffect, useState } from 'react';
+import Pusher from 'pusher-js';
+
+interface TodoUpdate {
+  todoId: string;
+  listId: string;
+  newPosition: number;
+}
 
 export default function TestPusher() {
-  const [updates, setUpdates] = useState<any[]>([])
+  const [updates, setUpdates] = useState<TodoUpdate[]>([]);
 
   useEffect(() => {
     // Initialize Pusher client
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
       cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
-    })
+    });
 
     // Subscribe to channel
-    const channel = pusher.subscribe('todo-channel')
+    const channel = pusher.subscribe('todo-channel');
 
     // Bind to event
-    channel.bind('todo-updated', (data: any) => {
-      console.log('Received update:', data)
-      setUpdates(prev => [...prev, data])
-    })
+    channel.bind('todo-updated', (data: TodoUpdate) => {
+      console.log('Received update:', data);
+      setUpdates((prev) => [...prev, data]);
+    });
 
     // Cleanup
     return () => {
-      channel.unbind()
-      pusher.unsubscribe('todo-channel')
-    }
-  }, [])
+      channel.unbind_all();
+      pusher.unsubscribe('todo-channel');
+    };
+  }, []);
 
   // Test function to trigger update
   const testUpdate = async () => {
@@ -38,15 +44,15 @@ export default function TestPusher() {
         body: JSON.stringify({
           todoId: '123',
           listId: '456',
-          newPosition: 1
-        })
-      })
-      const data = await response.json()
-      console.log('Update response:', data)
+          newPosition: 1,
+        }),
+      });
+      const data = await response.json();
+      console.log('Update response:', data);
     } catch (error) {
-      console.error('Error:', error)
+      console.error('Error:', error);
     }
-  }
+  };
 
   return (
     <div>
@@ -59,5 +65,5 @@ export default function TestPusher() {
         ))}
       </div>
     </div>
-  )
+  );
 }
