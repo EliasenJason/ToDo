@@ -34,6 +34,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ message: 'Todo updated successfully' })
   } catch (error) {
+    console.log(error)
     return NextResponse.json({ error: 'Failed to update todo' }, { status: 500 })
   }
 }
