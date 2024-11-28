@@ -115,7 +115,7 @@ export default function DragAndDrop() {
 
   const [capacity] = useState<number>(10);
   const [currentlyDraggingId, setCurrentlyDraggingId] = useState<string | null>(null);
-  const [draggedItem, setDraggedItem] = useState<DraggableItem | null>(null);
+  const [draggedItem, setDraggedItem] = useState<DraggableItem | null | undefined>(null);
 
   useEffect(() => {
     console.log(items);
@@ -148,6 +148,7 @@ export default function DragAndDrop() {
       item.x === sourceColumn && 
       item.y === sourceIndex
     );
+    console.log(item)
     setDraggedItem(item);
   };
 
