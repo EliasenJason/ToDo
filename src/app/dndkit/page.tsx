@@ -92,10 +92,18 @@ const SortableItem = ({
   );
 };
 
+interface DraggableItem {
+  id: string;
+  content: string;
+  x: number;
+  y: number;
+  grid: number;
+}
+
 
 
 export default function DragAndDrop() {
-  const [items, setItems] = useState<any[]>([
+  const [items, setItems] = useState<DraggableItem[]>([
     { id: '1', content: 'Item 1', x: 0, y: 0, grid: 0 },
     { id: '2', content: 'Item 2', x: 0, y: 1, grid: 0 },
     { id: '3', content: 'Item 3', x: 0, y: 2, grid: 0 },
@@ -106,7 +114,7 @@ export default function DragAndDrop() {
 
   const [capacity] = useState<number>(10);
   const [currentlyDraggingId, setCurrentlyDraggingId] = useState<string | null>(null);
-  const [draggedItem, setDraggedItem] = useState<any>(null);
+  const [draggedItem, setDraggedItem] = useState<DraggableItem | null>(null);
 
   useEffect(() => {
     console.log(items);
