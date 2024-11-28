@@ -3,6 +3,7 @@ import { DndContext, closestCenter, DragEndEvent, DragStartEvent, DragOverlay } 
 // import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import { useEffect, useState } from 'react';
+import { CSSProperties } from 'react';
 
 const DragOverlayItem = ({ content }: { content: string }) => {
   return (
@@ -56,7 +57,7 @@ const SortableItem = ({
     dropRef(node);
   };
 
-  const style = {
+  const style: CSSProperties = {
     transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : 'none',
     border: '1px solid gray',
     margin: '8px 0',
