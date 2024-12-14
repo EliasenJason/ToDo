@@ -2,8 +2,9 @@
 import { DndContext, closestCenter, DragEndEvent, DragStartEvent, DragOverlay } from '@dnd-kit/core';
 // import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { CSSProperties } from 'react';
+import Pusher from 'pusher-js';
 
 const DragOverlayItem = ({ content }: { content: string }) => {
   return (
@@ -117,7 +118,33 @@ export default function DragAndDrop() {
   const [currentlyDraggingId, setCurrentlyDraggingId] = useState<string | null>(null);
   const [draggedItem, setDraggedItem] = useState<DraggableItem | null | undefined>(null);
 
+  //initialize pusher connection when page is loaded
   useEffect(() => {
+    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+    });
+
+    // Log when connection is established
+    pusher.connection.bind('connected', () => {
+      console.log('Connected to Pusher');
+    });
+
+    const channel = pusher.subscribe('items-update-channel');
+
+    channel.bind('items-update', (data: DraggableItem[]) => {
+      console.log('Received update:', data);
+      setItems(data);
+    });
+
+    return () => {
+      channel.unbind_all();
+      pusher.unsubscribe('items-update-channel');
+    };
+  }, []);
+
+  useEffect(() => {
+    //update database
+    //broadcast changes to all clients via websocket
     console.log(items);
   }, [items]);
   
@@ -184,7 +211,23 @@ export default function DragAndDrop() {
           draggedItem.x = targetColumn;
           draggedItem.y = targetIndex;
         }
-
+        const broadCastUpdate = async () => {
+          try {
+            const response = await fetch('/api/update-items', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(newItems)
+            });
+            const data = await response.json();
+            console.log("update:")
+            console.log(data);
+          } catch (error) {
+            console.error('Error:', error);
+          }
+        };
+        broadCastUpdate();
         return newItems;
       });
     }
