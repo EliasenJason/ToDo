@@ -2,7 +2,7 @@
 import { DndContext, closestCenter, DragEndEvent, DragStartEvent, DragOverlay } from '@dnd-kit/core';
 // import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { useDraggable, useDroppable } from '@dnd-kit/core';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CSSProperties } from 'react';
 import Pusher from 'pusher-js';
 
